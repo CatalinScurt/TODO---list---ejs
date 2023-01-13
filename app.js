@@ -22,7 +22,7 @@ const itemSchema = {
   name: String
 };
 
-var list;
+var list = [];
 
 const Item = mongoose.model("Item", itemSchema);
 
@@ -58,6 +58,7 @@ app.get("/", function (req, res) {
       });
       res.redirect("/");
     } else {
+      list = list.filter(item => item.name !== 'Favicon.ico')
       res.render("list", { listTitle: "Today", newListItems: foundItems, list: list });
     }
   });
@@ -72,7 +73,6 @@ app.get("/", function (req, res) {
 
 app.get("/:customListName", (req, res) => {
   const customListName = _.capitalize(req.params.customListName);
-
   List.find({}, (err, foundItems) => {
     if (foundItems) {
       list = foundItems;
@@ -93,6 +93,7 @@ app.get("/:customListName", (req, res) => {
         res.redirect("/" + customListName);
       } else {
         // show an existing list
+        list = list.filter(item => item.name !== 'Favicon.ico')
         res.render("list", { listTitle: foundList.name, newListItems: foundList.items, list: list })
       }
     }
